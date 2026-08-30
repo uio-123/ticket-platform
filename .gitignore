@@ -14,3 +14,9 @@ target
 .settings
 .project
 logs
+
+# Personal planning and career materials stay local only.
+PLAN.md
+SHOWCASE_PLAN.md
+docs/interview/
+简历项目素材-黑马商城微服务.md
