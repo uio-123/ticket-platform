@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface TicketOrderService {
     Long create(TicketOrderCreateDTO request);
+    Long createForUser(Long userId, TicketOrderCreateDTO request);
     void pay(Long orderId);
     void cancel(Long orderId);
     void closeExpiredOrders();

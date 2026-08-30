@@ -36,6 +36,12 @@ public class TicketOrderServiceImpl implements TicketOrderService {
     public Long create(TicketOrderCreateDTO request) {
         Long userId = UserContext.getUser();
         if (userId == null) throw new BadRequestException("请先登录");
+        return createForUser(userId, request);
+    }
+
+    @Override
+    @Transactional
+    public Long createForUser(Long userId, TicketOrderCreateDTO request) {
         if (request.getQuantity() == null || request.getQuantity() <= 0) throw new BadRequestException("购票数量必须大于 0");
         TicketTierDTO tier = ticketTierClient.queryTier(request.getTierId());
         if (tier == null || !request.getSessionId().equals(tier.getSessionId())) throw new BadRequestException("票档不存在");
