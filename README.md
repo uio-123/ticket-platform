@@ -1,6 +1,6 @@
 # Ticket Platform
 
-面向热门赛事与演出的票务交易平台。项目聚焦“票档售卖”场景，展示演出管理、库存防超卖、异步建单、支付出票与一次性验票的微服务闭环。
+面向热门赛事与演出的票务交易平台，聚焦“票档售卖”场景，提供演出管理、库存防超卖、异步建单、支付出票与一次性验票的微服务闭环。
 
 ## 核心链路
 
@@ -50,9 +50,7 @@ Spring Boot 2.7、Spring Cloud Alibaba、MyBatis-Plus、MySQL、Redis、RabbitMQ
 .\ticket-mvp-demo\run-demo.ps1
 ```
 
-## 展示材料
+## 项目文档
 
-- [演示脚本与故障排查](docs/demo/DEMO_GUIDE.md)
+- [接口操作与故障排查](docs/demo/DEMO_GUIDE.md)
 - [架构、时序和状态图](docs/architecture/ARCHITECTURE.md)
-- [简历表述与面试问答](docs/interview/INTERVIEW_NOTES.md)
-- [展示交付计划](SHOWCASE_PLAN.md)
