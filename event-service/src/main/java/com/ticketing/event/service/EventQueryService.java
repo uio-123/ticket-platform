@@ -7,6 +7,7 @@ import com.ticketing.event.domain.po.TicketTier;
 import com.ticketing.event.mapper.ShowMapper;
 import com.ticketing.event.mapper.ShowSessionMapper;
 import com.ticketing.event.mapper.TicketTierMapper;
+import com.ticketing.common.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,25 @@ public class EventQueryService {
         return ticketTierMapper.selectList(new LambdaQueryWrapper<TicketTier>()
                 .eq(TicketTier::getSessionId, sessionId).eq(TicketTier::getStatus, 1)
                 .orderByAsc(TicketTier::getPrice));
+    }
+
+    public TicketTier getTier(Long tierId) {
+        TicketTier tier = ticketTierMapper.selectById(tierId);
+        if (tier == null || tier.getStatus() != 1) {
+            throw new BadRequestException("票档不存在或已停售");
+        }
+        return tier;
+    }
+
+    public void deductStock(Long tierId, Integer quantity) {
+        if (quantity == null || quantity <= 0 || ticketTierMapper.deductAvailableStock(tierId, quantity) != 1) {
+            throw new BadRequestException("票档余量不足");
+        }
+    }
+
+    public void restoreStock(Long tierId, Integer quantity) {
+        if (quantity == null || quantity <= 0 || ticketTierMapper.restoreAvailableStock(tierId, quantity) != 1) {
+            throw new BadRequestException("票档库存回补失败");
+        }
     }
 }
