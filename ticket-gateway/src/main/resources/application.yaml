@@ -1,0 +1,14 @@
+server:
+  port: 8080
+ticket:
+  jwt:
+    location: classpath:ticket-platform.jks
+    alias: ticket-platform
+    password: ticket-platform123
+    tokenTTL: 30m
+  auth:
+    excludePaths:
+      - /search/**
+      - /users/login
+      - /items/**
+      - /hi

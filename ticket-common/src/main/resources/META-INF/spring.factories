@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.ticketing.common.config.MyBatisConfig,\
+  com.ticketing.common.config.MvcConfig,\
+  com.ticketing.common.config.MqConfig,\
+  com.ticketing.common.config.JsonConfig

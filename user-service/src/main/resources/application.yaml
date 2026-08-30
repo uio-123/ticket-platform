@@ -6,10 +6,10 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:mysql://${hm.db.host}:3306/hm-user?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${ticket.db.host}:3306/ticket_user?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: ${hm.db.pw}
+    password: ${ticket.db.pw}
   cloud:
     nacos:
       server-addr: 192.168.150.101:8848
@@ -22,7 +22,7 @@ mybatis-plus:
       id-type: auto
 logging:
   level:
-    com.hmall: debug
+    com.ticketing: debug
   pattern:
     dateformat: HH:mm:ss:SSS
   file:
@@ -30,21 +30,21 @@ logging:
 knife4j:
   enable: true
   openapi:
-    title: 黑马商城用户服务接口文档
-    description: "黑马商城用户服务接口文档"
-    email: zhanghuyi@itcast.cn
-    concat: 虎哥
-    url: https://www.itcast.cn
+    title: 票务平台用户服务接口文档
+    description: "票务平台用户服务接口文档"
+    email: team@ticketing.local
+    concat: Ticketing Team
+    url: https://ticketing.local
     version: v1.0.0
     group:
       default:
         group-name: default
         api-rule: package
         api-rule-resources:
-          - com.hmall.user.controller
-hm:
+          - com.ticketing.user.controller
+ticket:
   jwt:
-    location: classpath:hmall.jks
-    alias: hmall
-    password: hmall123
+    location: classpath:ticket-platform.jks
+    alias: ticket-platform
+    password: ticket-platform123
     tokenTTL: 30m
