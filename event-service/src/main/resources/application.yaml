@@ -4,5 +4,5 @@ ticket:
   db:
     database: ticket_event
   swagger:
-    title: "票务平台商品服务接口文档"
-    package: com.ticketing.item.controller
+    title: "票务平台演出服务接口文档"
+    package: com.ticketing.event.controller
