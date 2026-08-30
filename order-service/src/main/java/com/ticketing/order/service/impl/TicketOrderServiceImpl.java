@@ -84,6 +84,7 @@ public class TicketOrderServiceImpl implements TicketOrderService {
     @Override
     @Scheduled(fixedDelay = 60000)
     public void closeExpiredOrders() {
+        // cancel() 内部使用 status = PENDING_PAYMENT 的条件更新，避免与支付并发时重复回补。
         ticketOrderMapper.findExpired(LocalDateTime.now().minusMinutes(15)).forEach(order -> cancel(order.getId()));
     }
 

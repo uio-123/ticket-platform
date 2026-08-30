@@ -1,0 +1,12 @@
+ticket:
+  db:
+    host: ${TICKET_DB_HOST:127.0.0.1}
+    pw: ${TICKET_DB_PASSWORD:change-me}
+spring:
+  cloud:
+    nacos:
+      server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}

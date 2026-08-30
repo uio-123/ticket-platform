@@ -1,0 +1,80 @@
+@eventUrl = http://localhost:8081
+@orderUrl = http://localhost:8085
+@userId = 10001
+@sessionId = 2001
+@tierId = 3001
+
+### 1. 查询在售演出
+GET {{eventUrl}}/shows
+
+### 2. 查询场次
+GET {{eventUrl}}/shows/1001/sessions
+
+### 3. 查询票档余量
+GET {{eventUrl}}/shows/sessions/{{sessionId}}/ticket-tiers
+
+### 4. 开售前预热 Redis 余票
+PUT {{orderUrl}}/ticket-rush/sessions/{{sessionId}}/tiers/{{tierId}}/stock?stock=5
+user-info: {{userId}}
+
+### 5. Lua 原子预扣并异步建单
+POST {{orderUrl}}/ticket-rush
+Content-Type: application/json
+user-info: {{userId}}
+
+{
+  "sessionId": {{sessionId}},
+  "tierId": {{tierId}},
+  "audienceId": 90001,
+  "quantity": 1
+}
+
+> {% client.global.set("rushRequestId", response.body.replaceAll('"', '')); %}
+
+### 6. 轮询抢票结果；成功格式为 SUCCESS:{orderId}
+GET {{orderUrl}}/ticket-rush/{{rushRequestId}}
+user-info: {{userId}}
+
+### 7. 普通订单路径（无需 MQ 时可用于演示支付、出票和验票）
+POST {{orderUrl}}/ticket-orders
+Content-Type: application/json
+user-info: {{userId}}
+
+{
+  "sessionId": {{sessionId}},
+  "tierId": {{tierId}},
+  "audienceId": 90001,
+  "quantity": 1
+}
+
+> {% client.global.set("orderId", response.body); %}
+
+### 8. 模拟支付成功并出票
+PUT {{orderUrl}}/ticket-orders/{{orderId}}/pay
+user-info: {{userId}}
+
+### 9. 查询电子票；复制返回的 token 赋给下方 ticketToken
+GET {{orderUrl}}/ticket-orders/{{orderId}}/tickets
+user-info: {{userId}}
+
+@ticketToken = replace-with-ticket-token
+
+### 10. 第一次验票应成功
+PUT {{orderUrl}}/ticket-orders/tickets/{{ticketToken}}/verify
+user-info: {{userId}}
+
+### 11. 重复验票应失败
+PUT {{orderUrl}}/ticket-orders/tickets/{{ticketToken}}/verify
+user-info: {{userId}}
+
+### 12. 超限购示例：同用户同场次总数超过 2 时应失败
+POST {{orderUrl}}/ticket-orders
+Content-Type: application/json
+user-info: {{userId}}
+
+{
+  "sessionId": {{sessionId}},
+  "tierId": {{tierId}},
+  "audienceId": 90001,
+  "quantity": 3
+}

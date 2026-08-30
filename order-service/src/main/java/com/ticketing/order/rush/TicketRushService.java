@@ -16,6 +16,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TicketRushService {
+    // 单次 Lua 调用完成余票和限购校验，避免热点请求并发穿透到数据库。
     private static final String EXCHANGE = "ticket.rush.direct";
     private static final String ROUTING_KEY = "ticket.rush.request";
     private static final DefaultRedisScript<Long> RESERVE_SCRIPT = new DefaultRedisScript<>(
@@ -50,6 +51,7 @@ public class TicketRushService {
 
     public void markSuccess(String requestId, Long orderId) { redisTemplate.opsForValue().set(resultKey(requestId), "SUCCESS:" + orderId, Duration.ofMinutes(20)); }
     public void markFailureAndRollback(TicketRushMessage message) {
+        // 只有异步建单失败才回补；成功订单的库存由数据库订单链路确认。
         TicketOrderCreateDTO order = message.getOrder();
         redisTemplate.opsForValue().increment(stockKey(order.getSessionId(), order.getTierId()), order.getQuantity());
         redisTemplate.opsForValue().increment(userKey(order.getSessionId(), message.getUserId()), -order.getQuantity());

@@ -19,6 +19,7 @@ public class TicketRushListener {
     @RabbitListener(bindings = @QueueBinding(value = @Queue(name = "ticket.rush.request.queue", durable = "true"),
             exchange = @Exchange(name = "ticket.rush.direct"), key = "ticket.rush.request"))
     public void consume(TicketRushMessage message) {
+        // requestId 的 SETNX 使 RabbitMQ 重投不会创建重复订单。
         String consumedKey = "ticket:rush:consumed:" + message.getRequestId();
         if (!Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(consumedKey, "1"))) return;
         try {
